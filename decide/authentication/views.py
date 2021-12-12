@@ -14,6 +14,35 @@ from django.core.exceptions import ObjectDoesNotExist
 from .serializers import UserSerializer
 
 
+from .forms import FormSignUp
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import update_session_auth_hash, authenticate, login
+
+
+
+def registerUser(request):
+    if request.method == 'POST':
+        form = FormSignUp(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.refresh_from_db()
+            user.profile.sex = form.cleaned_data.get('sex')
+            user.profile.location = form.cleaned_data.get('location')
+            user.profile.birth_date = form.cleaned_data.get('birth_date')
+            user.save()
+
+            return HttpResponseRedirect('/authentication/')
+    else:
+        form = FormSignUp()
+
+    return render(request, 'register.html', {"form":form})
+
+
+
+
+
+
+
 class GetUserView(APIView):
     def post(self, request):
         key = request.data.get('token', '')
