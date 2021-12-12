@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_swagger',
     'gateway',
+
+    'crispy_forms',
+    'nocaptcha_recaptcha',
 ]
 
 REST_FRAMEWORK = {
@@ -87,7 +90,7 @@ ROOT_URLCONF = 'decide.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -180,3 +183,7 @@ if os.path.exists("config.jsonnet"):
 
 
 INSTALLED_APPS = INSTALLED_APPS + MODULES
+
+
+NORECAPTCHA_SITE_KEY = '6LdhDYgUAAAAAEiExWkWXgbOsFbb74QoFdDJzcqm'
+NORECAPTCHA_SECRET_KEY = '6LdhDYgUAAAAAFc61sKda-9zzxhDnmpzgwE1PoS8'
