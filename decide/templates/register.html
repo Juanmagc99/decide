@@ -1,0 +1,106 @@
+
+{% load crispy_forms_tags %}
+
+
+{% if user.is_authenticated %}
+  <script>
+  location.href="/"
+  </script>
+{%endif%}
+
+</br></br><br></br>
+
+<main class="my-form">
+  <div class="cotainer">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">Register</div>
+          <div class="card-body">
+            <form name="my-form" method="post">
+              {% csrf_token %}
+              <div class="form-group row">
+                <div class="col-md-6 wrap-input10">
+                  {{ form.username|as_crispy_field }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-6">
+                  {{ form.first_name|as_crispy_field }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-6">
+                  {{ form.last_name|as_crispy_field }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="emailaddress" class=" col-form-label text-md-right"></label>
+                <div class="col-md-6">
+                  {{ form.email|as_crispy_field }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="sex" class=" col-form-label text-md-right"></label>
+                <div class="col-md-6">
+                  {{ form.sex|as_crispy_field }}
+                  
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="location" class=" col-form-label text-md-right"></label>
+                <div class="col-md-6">
+                  
+                  {{ form.location|as_crispy_field }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-6">
+                  {{ form.birth_date|as_crispy_field }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-6">
+                  <!--input type="text" id="passwordC" class="form-control" name="password"-->
+                  {{ form.password1|as_crispy_field }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-6">
+                  <!--input type="text" id="passwordC" class="form-control" name="passwordC"-->
+                  {{ form.password2|as_crispy_field }}
+                </div>
+              </div>
+
+              <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+              <div class="form-group row">
+                <div class="col-md-6">
+                  <!--input type="text" id="passwordC" class="form-control" name="passwordC"-->
+                  {{ form.captcha }}
+                </div>
+              </div>
+
+
+              {% if messages %}
+                {% for message in messages %}
+                  {{ message }}
+                {% endfor %}
+              {% endif %}
+              
+              <div class="col-md-6 offset-md-4">
+                <button type="submit" class="login100-form-btn" style="width:25%">
+                  Register
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<a href="/authentication/">volver atrás</a>
+
+
