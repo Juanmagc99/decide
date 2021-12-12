@@ -1,0 +1,21 @@
+{% load i18n %}
+
+
+<h2>{% trans "Homepage" %}</h2>
+	<p>{% trans "Welcome to Decide, " %} {% if user.is_authenticated %}{{ user.username }}{% else %}{% trans "visitor" %}{% endif %}</p>
+	<p>
+		<strong> {% trans "Total registeres users" %} </strong> {{ count }}
+	</p>
+
+
+
+{% if user.is_authenticated %}
+  <a href="/authentication/logoutUser/">cerrar sesión</a>
+{%endif%}
+
+{% if not user.is_authenticated %}
+  <a href="/authentication/loginUser/">iniciar sesión</a>
+  <hr>
+  <a href="/authentication/registerUser/">registrarse</a>
+  <hr>
+{%endif%}
