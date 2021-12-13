@@ -27,8 +27,8 @@ UserModel = get_user_model()
 from django.core.mail import send_mail
 from .forms import RegisterUserForm
 
-
-
+      
+      
 def register(request):
     if request.user.is_authenticated:
         print('Already authenticated')
@@ -88,6 +88,31 @@ def register(request):
 
 
 
+
+
+
+def activate(request, uidb64, token):
+
+    # uid = urlsafe_base64_decode(uidb64.encode('utf-8').strip()).encode('utf-8').strip().decode('cp1252')
+    # user = UserModel._default_manager.get(pk=uid)
+
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = UserModel._default_manager.get(pk=uid)
+
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        # Redirect user to login
+        messages.success(request, 'Successful email confirmation, you can proceed to login.')
+        return HttpResponseRedirect(reverse('login'))
+    else:
+        return HttpResponse('Activation link is invalid!')
+          
+          
 
 
 
