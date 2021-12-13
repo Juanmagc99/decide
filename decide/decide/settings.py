@@ -184,6 +184,7 @@ if os.path.exists("config.jsonnet"):
 INSTALLED_APPS = INSTALLED_APPS + MODULES
 
 
+LOGIN_URL='/authentication/accounts/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
