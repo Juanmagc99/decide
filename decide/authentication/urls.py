@@ -1,8 +1,8 @@
 from django.urls import include, path
 from rest_framework.authtoken.views import obtain_auth_token
 
-from .views import GetUserView, LogoutView, RegisterView, home
 
+from .views import GetUserView, LogoutView, RegisterView, register, activate, home
 
 urlpatterns = [
     path('login/', obtain_auth_token),
@@ -11,4 +11,10 @@ urlpatterns = [
     path('register/', RegisterView.as_view()),
 
     path('', home, name='home'),
+    
+    path('accounts/', include('django.contrib.auth.urls')),
+
+    path('activate/<uidb64>/<token>/', activate, name='activate'),
+
+    path('registerUser/', register, name='registerUser'),
 ]
