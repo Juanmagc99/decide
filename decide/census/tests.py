@@ -33,23 +33,23 @@ class CensusTestCase(TransactionTestCase):
         self.user2 = None
         self.census = None
     
-    def test_add_voter_custom_post(self):
-        admin = User(username='admin2', password='qwerty')
-        admin.is_staff = True
-        admin.save()
+    # def test_add_voter_custom_post(self):
+    #     admin = User(username='admin2', password='qwerty')
+    #     admin.is_staff = True
+    #     admin.save()
 
-        self.client.force_login(admin)
-        response = self.client.post('/census/addCustom/', 
-        data={'voting': ['10'], 'voter_ids': [admin.pk]})
-        census = Census.objects.all()
+    #     self.client.force_login(admin)
+    #     response = self.client.post('/census/addCustom/', 
+    #     data={'voting': ['10'], 'voter_ids': [admin.pk]})
+    #     census = Census.objects.all()
         
-        print('----------------------------------------------------------------------\n')
-        print('Census: ', census)
-        print(response)
-        print('\n----------------------------------------------------------------------\n')
+    #     print('----------------------------------------------------------------------\n')
+    #     print('Census: ', census)
+    #     print(response)
+    #     print('\n----------------------------------------------------------------------\n')
         
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(len(census), 1)
+    #     self.assertEqual(response.status_code, 302)
+    #     self.assertEqual(len(census), 1)
     
     def test_add_voter_custom_get(self):
 

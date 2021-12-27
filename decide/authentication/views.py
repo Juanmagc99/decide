@@ -34,7 +34,7 @@ from .models import Profile
 def register(request):
     if request.user.is_authenticated:
         print('Already authenticated')
-        return HttpResponseRedirect(reverse('rxWod:index'))
+        return HttpResponseRedirect(reverse('home'))
     else:
         if request.method == 'POST':
             form = RegisterUserForm(request.POST)
