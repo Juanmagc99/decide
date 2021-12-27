@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
@@ -155,7 +156,7 @@ class RegisterTestCase(TestCase):
     def test_nuevo_usuario_OK(self):
         os.environ['NORECAPTCHA_TESTING'] = 'True'  # desactivamos el captcha
 
-        data = {'email': 'new1@mail.com',
+        data1 = {'email': 'new1@mail.com',
                 'first_name': 'new',
                 'last_name': 'new',
                 'birth_date':'2000-01-01',
@@ -164,15 +165,27 @@ class RegisterTestCase(TestCase):
                 'location': 'Sevilla',
                 'sex': 'DK/NA',
                 'g-recaptcha-response': 'PASSED',
-                'username': 'new1'}
+                'username': 'new11'}
 
-        response = self.client.post("/authentication/registerUser/", data=data, format="json", follow=True)
+        response = self.client.post("/authentication/registerUser/", data=data1, format="json", follow=True)
         self.assertEqual(response.status_code, 200)
 
-        form = RegisterUserForm(data)
+        data2 = {'email': 'new2@mail.com',  # cambiamos el email para evitar la validacion
+                'first_name': 'new',
+                'last_name': 'new',
+                'birth_date':'2000-01-01',
+                'password1': 'Practica1',
+                'password2': 'Practica1',
+                'location': 'Sevilla',
+                'sex': 'DK/NA',
+                'g-recaptcha-response': 'PASSED',
+                'username': 'new12'}    # cambiamos el username para evitar la validacion
+
+        form = RegisterUserForm(data2)
         self.assertTrue(form)
         self.assertTrue(form.is_valid())
         user1=form.save()
+        # user1 = User.objects.get(username='new11')
         self.assertTrue(user1.id>0)     # el usuario existe y se ha guardado
 
 
@@ -180,7 +193,7 @@ class RegisterTestCase(TestCase):
     def test_nuevo_usuario_email_mal_FAIL(self):
         os.environ['NORECAPTCHA_TESTING'] = 'True'
 
-        data = {'email': 'new1.mail.com',   # email no valido
+        data1 = {'email': 'new1.mail.com',   # email no valido
                 'first_name': 'new',
                 'last_name': 'new',
                 'birth_date':'2000-01-01',
@@ -189,21 +202,38 @@ class RegisterTestCase(TestCase):
                 'location': 'Sevilla',
                 'sex': 'DK/NA',
                 'g-recaptcha-response': 'PASSED',
-                'username': 'new1'}
+                'username': 'new13'}
 
-        response = self.client.post("/authentication/registerUser/", data=data, format="json", follow=True)
+        response = self.client.post("/authentication/registerUser/", data=data1, format="json", follow=True)
         self.assertEqual(response.status_code, 200)
 
-        form = RegisterUserForm(data)
+        form = RegisterUserForm(data1)
         self.assertTrue(form)
-        self.assertTrue(form.is_valid()==False)
+        self.assertTrue(form.is_valid()==False)        
+
+        # self.assertRaises(ValidationError)
+
+        # data2 = {'email': 'new1@mail.com',
+        #         'first_name': 'new',
+        #         'last_name': 'new',
+        #         'birth_date':'2000-01-01',
+        #         'password1': 'Practica1',
+        #         'password2': 'Practica1',
+        #         'location': 'Sevilla',
+        #         'sex': 'DK/NA',
+        #         'g-recaptcha-response': 'PASSED',
+        #         'username': 'new14'}    # cambiamos el username para evitar la validacion
+
+        # form = RegisterUserForm(data2)
+        # self.assertTrue(form)
+        # self.assertTrue(form.is_valid()==False)
 
 
 
     def test_nuevo_usuario_ya_existe_FAIL(self):
         os.environ['NORECAPTCHA_TESTING'] = 'True'
 
-        data = {'email': 'new1@mail.com',
+        data = {'email': 'new14@mail.com',
                 'first_name': 'new',
                 'last_name': 'new',
                 'birth_date':'2000-01-01',
@@ -212,22 +242,169 @@ class RegisterTestCase(TestCase):
                 'location': 'Sevilla',
                 'sex': 'DK/NA',
                 'g-recaptcha-response': 'PASSED',
-                'username': 'new1'}
+                'username': 'new14'}
 
         # creamos el usuario
         response = self.client.post("/authentication/registerUser/", data=data, format="json", follow=True)
         self.assertEqual(response.status_code, 200)
+
+        # username ya en uso
         form = RegisterUserForm(data)
         self.assertTrue(form)
-        self.assertTrue(form.is_valid())
-        form.save()
+
+        try:
+            form.is_valid()
+            form.save()
+        except ValueError as e:
+            pass
+
+
+        # data1 = {'email': 'new14@mail.com',
+        #         'first_name': 'new',
+        #         'last_name': 'new',
+        #         'birth_date':'2000-01-01',
+        #         'password1': 'Practica1',
+        #         'password2': 'Practica1',
+        #         'location': 'Sevilla',
+        #         'sex': 'DK/NA',
+        #         'g-recaptcha-response': 'PASSED',
+        #         'username': 'new144'}
+
+        # # email ya en uso
+        # form = RegisterUserForm(data1)
+        # self.assertTrue(form)
+
+        # try:
+        #     form.is_valid()
+        #     form.save()
+        # except ValueError as e:
+        #     pass
+
+
+        data2 = {'email': 'new144@mail.com',
+                'first_name': 'new',
+                'last_name': 'new',
+                'birth_date':'2000-01-01',
+                'password1': 'Practica1',
+                'password2': 'Practica12',
+                'location': 'Sevilla',
+                'sex': 'DK/NA',
+                'g-recaptcha-response': 'PASSED',
+                'username': 'new1444'}
+
+        # contraseñas no coinciden
+        form = RegisterUserForm(data2)
+        self.assertTrue(form)
+
+        try:
+            form.is_valid()
+            form.save()
+        except ValueError as e:
+            pass     
+
+
+        data3 = {'email': 'new1444@mail.com',
+                'first_name': 'new',
+                'last_name': 'new',
+                'birth_date':'2000-01-01',
+                'password1': '11111111111',
+                'password2': '11111111111',
+                'location': 'Sevilla',
+                'sex': 'DK/NA',
+                'g-recaptcha-response': 'PASSED',
+                'username': 'new14444'}
+
+        # la contraseña no puede tener solo numeros
+        form = RegisterUserForm(data3)
+        self.assertTrue(form)
+
+        try:
+            form.is_valid()
+            form.save()
+        except ValueError as e:
+            pass        
+
+
+        data4 = {'email': 'new14444@mail.com',
+                'first_name': 'new',
+                'last_name': 'new',
+                'birth_date':'2000-01-01',
+                'password1': 'Prac',
+                'password2': 'Prac',
+                'location': 'Sevilla',
+                'sex': 'DK/NA',
+                'g-recaptcha-response': 'PASSED',
+                'username': 'new144444'}
+
+        # la contraseña debe medir 8 o mas caracteres
+        form = RegisterUserForm(data4)
+        self.assertTrue(form)
+
+        try:
+            form.is_valid()
+            form.save()
+        except ValueError as e:
+            pass       
+
+
+        data5 = {'email': 'new144444@mail.com',
+                'first_name': 'new1',
+                'last_name': 'new',
+                'birth_date':'2000-01-01',
+                'password1': 'Practica1',
+                'password2': 'Practica1',
+                'location': 'Sevilla',
+                'sex': 'DK/NA',
+                'g-recaptcha-response': 'PASSED',
+                'username': 'new1444444'}
+
+        # no puedes tener numeros en tu nombre
+        form = RegisterUserForm(data5)
+        self.assertTrue(form)
+
+        try:
+            form.is_valid()
+            form.save()
+        except ValueError as e:
+            pass      
+
+
+        data6 = {'email': 'new1444444@mail.com',
+                'first_name': 'new',
+                'last_name': 'new1',
+                'birth_date':'2000-01-01',
+                'password1': 'Practica1',
+                'password2': 'Practica1',
+                'location': 'Sevilla',
+                'sex': 'DK/NA',
+                'g-recaptcha-response': 'PASSED',
+                'username': 'new14444444'}
+
+        # no puedes tener numeros en tus apellidos
+        form = RegisterUserForm(data6)
+        self.assertTrue(form)
+
+        try:
+            form.is_valid()
+            form.save()
+        except ValueError as e:
+            pass      
+
+
+
+            # self.assertTrue('email' in e.message_dict)
+
+        # self.assertRaises(ValidationError, form.full_clean())
+
+        # self.assertTrue(form.is_valid()==False)
+        # form.save()
 
         # intentamos crearlo de nuevo
-        response = self.client.post("/authentication/registerUser/", data=data, format="json", follow=True)
-        self.assertEqual(response.status_code, 200)
-        form = RegisterUserForm(data)
-        self.assertTrue(form)
-        self.assertTrue(form.is_valid()==False) # email ya registrado
+        # response = self.client.post("/authentication/registerUser/", data=data, format="json", follow=True)
+        # self.assertEqual(response.status_code, 200)
+        # form = RegisterUserForm(data)
+        # self.assertTrue(form)
+        # self.assertTrue(form.is_valid()==False) # email ya registrado
 
 
 
