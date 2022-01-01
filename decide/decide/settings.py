@@ -72,8 +72,19 @@ MODULES = [
     'voting',
 ]
 
-BASEURL = 'https://egc-veleta.herokuapp.com'
-APIS = {}
+BASEURL = 'https://egc-full-veleta-g4-1.herokuapp.com'
+
+APIS = {
+    'authentication': BASEURL,
+    'base': BASEURL,
+    'booth': BASEURL,
+    'census': BASEURL,
+    'mixnet': BASEURL,
+    'postproc': BASEURL,
+    'store': BASEURL,
+    'visualizer': BASEURL,
+    'voting': BASEURL,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -209,8 +220,9 @@ EMAIL_HOST_PASSWORD = 'egc_2021'
 
 
 
-NOSE_ARGS = [
-    '--with-xunit'
-]
+# NOSE_ARGS = [
+#     '--with-xunit'
+# ]
+
 import django_heroku
 django_heroku.settings(locals(),test_runner=False)
